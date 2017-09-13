@@ -3,14 +3,25 @@ Solver-aided Imp
 
 A simple imperative-style language with automatic verification.
 
+## Prerequisites
+* [Stack](https://docs.haskellstack.org/en/stable/README/) (>= 1.4.0)
+* [Z3](https://github.com/Z3Prover/z3)
+
+## Build instructions
+* Type 'stack build'
+
+## Run instructions
+* Type 'stack exec Simp-exe <input_file>'
+
+## About
 Assertions are verified by compiling expressions to logical constraints
 and passing them to the Z3 theorem prover.
 
 See src/Ast.hs for the abstract syntax, and one of the ex*.imp example
 programs for concrete syntax.
 
-Functions are not recursive can only refer to other functions that were
-defined previously in the file.
+Functions are not recursive and can only refer to other functions that are
+defined earlier in the file.
 
 Since IMP commands don't return values, functions require an annotation
 to specify the output variable of the function. The value of that
