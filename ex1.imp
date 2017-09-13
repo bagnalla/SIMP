@@ -1,0 +1,31 @@
+# Example 1
+# f1, f2, and f3 are equal on all inputs
+
+def f1(a, b, c) : d {
+  a := b * c;
+  b := a + c;
+  if (b <= a-1) {
+    d := a + b + c
+  }
+  else {
+    d := a * b + c
+  }
+}
+
+def f2(a, b, c) : d {
+  d := (b * c) * (b * c + c) + c
+}
+
+def f3(a, b, c) : d {
+  d := b*b*c*c + b*c*c + c
+}
+
+verify {
+  intros a, b, c;
+  assume 0 <= c;
+  assert f1(a, b, c) == f2(a, b, c) && f2(a, b, c) == f3(a, b, c)
+}
+
+eval {
+  f1(1, 2, 3) + f2(3, 4, 5)
+}

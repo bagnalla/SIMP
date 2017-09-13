@@ -1,0 +1,32 @@
+# Example 2 - Triangular numbers formula
+# This is an example of where bounded model checking isn't so great.
+# Because the number of iterations of the loop in f1 scales linearly
+# with the input, the solver can only verify the assertion for small n.
+# Try setting the bound higher and changing the assumption accordingly -
+# - we might as well just run the functions in the interpreter and
+# compare their outputs.
+ 
+def f1(n) : out {
+  i := 0;
+  out := 0;
+  while (i <= n) {
+    out := out + i;
+    i := i + 1
+  }
+}
+
+def f2(n) : out {
+  out := n * (n + 1) / 2
+}
+
+verify {
+  bound 100;
+  intros n;
+  assume 0 <= n && n < 100;
+  assert f1(n) == f2(n)
+}
+
+eval {
+  f1(42)
+  #f1(1234567)
+}

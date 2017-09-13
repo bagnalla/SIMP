@@ -1,0 +1,34 @@
+# Example 3
+
+def f0(a) : out {
+  out := a / 2
+}
+
+def f1(a) : out {
+  out := a + 1
+}
+
+def f2(a) : out {
+  out := f1(a) * 2
+}
+
+def main() : out {
+  a := -10;
+  out := f0(a) + f1(a) + f2(a)
+}
+
+verify {
+  intros a;
+  assume a == 10;
+  assert f1(a) == 11;
+  assert f2(a) == 22;
+  assert f0(a) == 5;
+
+  intros b;
+  assume 0 <= b;
+  assert f0(b) < f1(b)
+}
+
+eval {
+  main()
+}
