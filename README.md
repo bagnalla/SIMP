@@ -28,7 +28,7 @@ to specify the output variable of the function. The value of that
 variable at the end of the function's execution is used as its return
 value.
 
-The 'eval' block must contain a single arithmetic expression, but it can
+The eval block must contain a single arithmetic expression, but it can
 call into a 'main' function or something similar. See ex3.imp for an
 example.
 
