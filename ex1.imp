@@ -23,7 +23,8 @@ def f3(a, b, c) : d {
 verify {
   intros a, b, c;
   assume 0 <= c;
-  assert f1(a, b, c) == f2(a, b, c) && f2(a, b, c) == f3(a, b, c)
+  assert f1(a, b, c) == f2(a, b, c) &&
+         f2(a, b, c) == f3(a, b, c)
 }
 
 eval {

@@ -14,7 +14,7 @@ def f2(a) : out {
 
 def main() : out {
   a := -10;
-  out := f0(a) + f1(a) + f2(a)
+  out := f0(a) + f1(f0(a+1)) + f2(a)
 }
 
 verify {

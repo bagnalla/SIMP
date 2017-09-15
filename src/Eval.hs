@@ -1,4 +1,4 @@
--- This module defines the term evaluation function.
+-- This module defines the interpreter evaluation functions.
 
 module Eval (
   evalAExp,
@@ -22,7 +22,7 @@ type FunEntry = (Fun, [Id])
 -- State maps Ids to either integer values or function entries
 type EvalState = Symtab (Either Integer FunEntry)
 
--- The Evaluation state monad
+-- The evaluation state monad
 type EvalM = StateT EvalState Identity
 
 -------------------
@@ -122,7 +122,7 @@ evalBExp (BAnd b1 b2) = do
   v2 <- evalBExp b2
   return $ v1 && v2
 evalBExp (BNot b) =
-  evalBExp b >>= (return . not)
+  return . not =<< evalBExp b
 
 -----------------------------------
 -- Big-step evaluation of commands.
@@ -135,11 +135,15 @@ evalCom (CAss id a) = do
   put $ add id (Left n) s
 evalCom (CSeq c1 c2) = evalCom c1 >> evalCom c2
 evalCom (CIf b c1 c2) = do
-  v <- evalBExp b
-  if v then evalCom c1 else evalCom c2
+  b' <- evalBExp b
+  if b'
+    then evalCom c1
+    else evalCom c2
 evalCom c@(CWhile b c1) = do
-  v <- evalBExp b
-  if v then evalCom c1 >> evalCom c else return ()
+  b' <- evalBExp b
+  if b'
+    then evalCom c1 >> evalCom c
+    else return ()
 
 --------------------
 -- Run the evaluator
