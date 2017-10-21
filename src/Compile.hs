@@ -83,9 +83,9 @@ unroll _ c = c
 -- Make phi nodes for merging conditional branches
 makePhis :: AST -> Context -> Context -> Context -> CompileM Context
 makePhis b original_ctx left_ctx right_ctx =
-  foldM go original_ctx $ keys original_ctx
-  where go :: Context -> Id -> CompileM Context
-        go ctx id = do
+  foldM f original_ctx $ keys original_ctx
+  where f :: Context -> Id -> CompileM Context
+        f ctx id = do
           var <- Z3.mkFreshIntVar (show id)
           ite <- Z3.mkIte b (lookupZ3Var dummypos id left_ctx)
             (lookupZ3Var dummypos id right_ctx)
@@ -94,11 +94,12 @@ makePhis b original_ctx left_ctx right_ctx =
 
 -- Create a context with fresh Z3 variables for each Id
 mkInitCtx :: [Id] -> CompileM Context
-mkInitCtx init_ids = do
-  ctx <- foldM (\acc id -> do
-                   var <- Z3.mkFreshIntVar (show id)
-                   return $ add id (Left var) acc) empty init_ids
-  return ctx
+mkInitCtx init_ids =
+  foldM f empty init_ids
+  where f acc id = do
+          var <- Z3.mkFreshIntVar (show id)
+          return $ add id (Left var) acc
+          
 
 -----------------------------------------
 -- Compile an arithmetic expression to Z3
@@ -201,10 +202,10 @@ compileCom _ (CWhile _ _) =
 compileVCom :: Context -> VCom -> CompileM Context
 compileVCom ctx VCSkip = return ctx
 compileVCom ctx (VCIntros ids) =
-  foldM (\acc id -> do
-            var <- Z3.mkFreshIntVar (show id)
-            return $ add id (Left var) acc)
-    ctx ids
+  foldM f ctx ids
+  where f acc id = do
+          var <- Z3.mkFreshIntVar (show id)
+          return $ add id (Left var) acc
 compileVCom ctx (VCAssume b) = do
   Z3.assert =<< compileBExp ctx b
   return ctx
