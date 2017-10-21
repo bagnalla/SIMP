@@ -1,4 +1,6 @@
 # Simp
+![Ralph](ralph1.png?raw=true "Ralph")
+
 Solver-aided Imp
 
 A simple imperative-style language with automatic verification.
