@@ -1,9 +1,7 @@
 -- This module defines the interpreter evaluation functions.
 
 module Eval (
-  evalAExp,
-  runEvalAExp,
-  showPos
+  evalAExp, runEvalAExp, showPos
   ) where
 
 import           Control.Monad.Identity

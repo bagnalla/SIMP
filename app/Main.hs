@@ -21,7 +21,7 @@ main = do
     src <- readFile file
 
     -- Parse
-    case parseProg "" src of
+    case parseProg file src of
       Left s -> error s
       Right p -> do
         

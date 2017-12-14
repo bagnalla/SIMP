@@ -1,5 +1,5 @@
 # Example 2 - Triangular numbers formula
-# This is an example of where bounded model checking isn't so great.
+# This is an example of where bounded model checking isn't so useful.
 # Because the number of iterations of the loop in f1 scales linearly
 # with the input, the solver can only verify the assertion for small n.
 # Try setting the bound higher and changing the assumption accordingly -

@@ -1,12 +1,7 @@
 -- This module defines the internal language syntax for Simp.
 
 module Ast (
-  AExp(..),
-  BExp(..),
-  Com(..),
-  VCom(..),
-  Fun(..),
-  Prog(..)
+  AExp(..), BExp(..), Com(..), Fun(..), Prog(..), VCom(..)
   ) where
 
 import Lexer (AlexPosn)

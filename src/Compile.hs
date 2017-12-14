@@ -1,9 +1,5 @@
 module Compile (
-  CompileM,
-  compileBExp,
-  compileProg,
-  Context,
-  Z3Var
+  CompileM, Context, Z3Var, compileBExp, compileProg
   ) where
 
 import           Control.Monad.State
@@ -29,11 +25,11 @@ type FunEntry = (Fun, [Id])
 type Context = Symtab (Either Z3Var FunEntry)
 
 -- We extend the Z3 monad with our own state for the loop unrolling
--- bound. We leave the context out of the state because we have to do a
--- bunch of manual manipulation of contexts which is a bit awkward when
--- it's in the state. It wouldn't be terrible, but either way is fine.
--- EDIT: also include the list of assertions that we're building up so
--- that we can negate their conjunction at the end.
+-- bound. We leave the context out of the state because we have to do
+-- a bunch of manual manipulation of contexts which is a bit awkward
+-- when it's in the state. It wouldn't be terrible, but either way is
+-- fine.  EDIT: also include the list of assertions that we're
+-- building up so that we can negate their conjunction at the end.
 type CompileM = StateT (Integer, [AST]) Z3
 
 -- MonadZ3 instance for StateT
@@ -227,11 +223,11 @@ compileVCom ctx (VCSeq vc1 vc2) = do
 
 compileProg :: Prog -> CompileM ()
 compileProg p =
-  -- Create initial context with function bindings.
-  -- We are sure to use foldl here, so that [keys acc] always refers to
-  -- all of the keys added to the ctx thus far. Since the functions are
-  -- listed in the order in which they appear in the program, the
-  -- function scoping rules are implemented by this.
+  -- Create initial context with function bindings.  We are sure to
+  -- use foldl here, so that [keys acc] always refers to all of the
+  -- keys added to the ctx thus far. Since the functions are listed in
+  -- the order in which they appear in the program, the function
+  -- scoping rules are enforced.
   let ctx = foldl (\acc f -> add (fid_of f) (Right (f, keys acc)) acc)
               empty (funs_of p) in do
   compileVCom ctx (verify_of p)

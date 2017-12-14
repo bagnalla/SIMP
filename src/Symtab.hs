@@ -1,14 +1,5 @@
 module Symtab (
-  Id(..),
-  Symtab,
-  empty,
-  add,
-  get,
-  exists,
-  keys,
-  fold,
-  Symtab.map,
-  mapi
+  Id(..), Symtab, Symtab.map, add, empty, exists, fold, get, keys, mapi
   ) where
 
 -- Use Haskell's map data structure
