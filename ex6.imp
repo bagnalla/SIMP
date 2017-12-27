@@ -5,18 +5,11 @@
 # inequality is given in the file christodoulou.v at
 # https://github.com/gstew5/cage.
 
-def f1(y, z) : d {
-  d := 3 * y * (z + 1)
-}
-
-def f2(y, z) : d {
-  d := 5*y*y + 1*z*z
-}
-
 verify {
   intros y, z;
   assume 0 <= y && 0 <= z;
-  assert f1(y, z) <= f2(y, z);
+
+  assert 3 * y * (z + 1) <= 5*y*y + 1*z*z
 }
 
 eval { 0 }
