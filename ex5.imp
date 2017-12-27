@@ -1,0 +1,19 @@
+# Example 5
+
+# Another example from a Coq development.
+
+def f1(a) : d {
+  d := ((a + a) - 1) + ((a + a) - 1) + 1
+}
+
+def f2(a) : d {
+  d := (a + a) + (a + a) - 1
+}
+
+verify {
+  intros a;
+  assume 0 <= a;
+  assert f1(a) == f2(a);
+}
+
+eval { 0 }

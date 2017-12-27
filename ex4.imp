@@ -1,0 +1,22 @@
+# Example 4
+
+# This is from a lemma that came up during a Coq proof (that the size
+# of commands is always reduced by the step relation in our MWU
+# language https://github.com/gstew5/cage). Using Simp we were able to
+# easily verify that it's true before attempting to prove it in Coq.
+
+def f1(n, c) : d {
+  d := 1 + c + 1 + 2*(n-1)*(c+1)
+}
+
+def f2(n, c) : d {
+  d := 1 + 2*n*(c+1)
+}
+
+verify {
+  intros n, c;
+  assume 0 <= c && 0 < n;
+  assert f1(n, c) < f2(n, c)
+}
+
+eval { 0 }
