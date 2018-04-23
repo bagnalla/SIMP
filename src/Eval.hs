@@ -55,9 +55,7 @@ lookupFunScope pos id s = let (_, scope) = lookupFunEntry pos id s in scope
 
 evalAExp :: AExp -> EvalM Integer
 evalAExp (ANum n) = return n
-evalAExp (AVar pos id) = do
-  s <- get
-  return $ lookupInt pos id s
+evalAExp (AVar pos id) = pure (lookupInt pos id) <*> get
 evalAExp (ACall pos fid args) = do
   s <- get
   arg_vals <- mapM evalAExp args
@@ -76,22 +74,10 @@ evalAExp (ACall pos fid args) = do
   let n = lookupInt pos (out_of f) s'
   put s
   return n
-evalAExp (APlus a1 a2) = do
-  n1 <- evalAExp a1
-  n2 <- evalAExp a2
-  return $ n1 + n2
-evalAExp (AMinus a1 a2) = do
-  n1 <- evalAExp a1
-  n2 <- evalAExp a2
-  return $ n1 - n2
-evalAExp (AMult a1 a2) = do
-  n1 <- evalAExp a1
-  n2 <- evalAExp a2
-  return $ n1 * n2
-evalAExp (ADiv a1 a2) = do
-  n1 <- evalAExp a1
-  n2 <- evalAExp a2
-  return $ div n1 n2
+evalAExp (APlus a1 a2) = pure (+) <*> evalAExp a1 <*> evalAExp a2
+evalAExp (AMinus a1 a2) = pure (-) <*> evalAExp a1 <*> evalAExp a2
+evalAExp (AMult a1 a2) = pure (*) <*> evalAExp a1 <*> evalAExp a2
+evalAExp (ADiv a1 a2) = pure div <*> evalAExp a1 <*> evalAExp a2
 
 ----------------------------------------------
 -- Big-step evaluation of boolean expressions.
@@ -99,28 +85,12 @@ evalAExp (ADiv a1 a2) = do
 evalBExp :: BExp -> EvalM Bool
 evalBExp BTrue = return True
 evalBExp BFalse = return False
-evalBExp (BLt a1 a2) = do
-  n1 <- evalAExp a1
-  n2 <- evalAExp a2
-  return $ n1 < n2
-evalBExp (BLe a1 a2) = do
-  n1 <- evalAExp a1
-  n2 <- evalAExp a2
-  return $ n1 <= n2
-evalBExp (BEq a1 a2) = do
-  n1 <- evalAExp a1
-  n2 <- evalAExp a2
-  return $ n1 == n2
-evalBExp (BOr b1 b2) = do
-  v1 <- evalBExp b1
-  v2 <- evalBExp b2
-  return $ v1 || v2
-evalBExp (BAnd b1 b2) = do
-  v1 <- evalBExp b1
-  v2 <- evalBExp b2
-  return $ v1 && v2
-evalBExp (BNot b) =
-  return . not =<< evalBExp b
+evalBExp (BLt a1 a2) = pure (<) <*> evalAExp a1 <*> evalAExp a2
+evalBExp (BLe a1 a2) = pure (<=) <*> evalAExp a1 <*> evalAExp a2
+evalBExp (BEq a1 a2) = pure (==) <*> evalAExp a1 <*> evalAExp a2
+evalBExp (BOr b1 b2) = pure (||) <*> evalBExp b1 <*> evalBExp b2
+evalBExp (BAnd b1 b2) = pure (&&) <*> evalBExp b1 <*> evalBExp b2
+evalBExp (BNot b) = pure not <*> evalBExp b
 
 -----------------------------------
 -- Big-step evaluation of commands.
@@ -130,7 +100,7 @@ evalCom CSkip = return ()
 evalCom (CAss id a) = do
   n <- evalAExp a
   s <- get
-  put $ add id (Left n) s
+  put $ add id (Left n) s    
 evalCom (CSeq c1 c2) = evalCom c1 >> evalCom c2
 evalCom (CIf b c1 c2) = do
   b' <- evalBExp b
